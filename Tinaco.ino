@@ -12,10 +12,12 @@ const int levelPins[] = {
 };       // an array of pin numbers to which LEDs are attached
 const int pushBtn = 11;
 const int relayPin = 12;
-int pinCount = 5;           // the number of pins (i.e. the length of the array)
+const int pinCount = 5;           // the number of pins (i.e. the length of the array)
 
 // variables will change:
-int buttonState = 0;         // variable for reading the pushbutton status
+int waterLevelState = 0;         // variable for reading the pushbutton status
+int buttonState = 0;
+int currentWaterLevel;
 
 void setup() {
   // initialize the LED pins as an output:
@@ -32,20 +34,33 @@ void setup() {
 }
 
 void loop() {
-  for (int currentSet = 0; currentSet < pinCount; currentSet++) {
-    buttonState = digitalRead(levelPins[currentSet]);
-    if (buttonState == HIGH) {
+  currentWaterLevel = 0;
+  for (int currentSet = 0; currentSet < 4; currentSet++) {
+    waterLevelState = digitalRead(levelPins[currentSet]);
+    if (waterLevelState == HIGH) {
     // turn LED on:
-    digitalWrite(ledPins[currentSet + 1], HIGH);
+      digitalWrite(ledPins[currentSet + 1], HIGH);
+      currentWaterLevel = currentSet + 1;
     } else {
     // turn LED off:
-    digitalWrite(ledPins[currentSet + 1], LOW);
+      digitalWrite(ledPins[currentSet + 1], LOW);
     }
   }
-  buttonState = digitalRead(pushBtn);
-  if (buttonState == HIGH) {
-    digitalWrite(relayPin, HIGH);
+  if (currentWaterLevel == 0) {
+    digitalWrite(ledPins[0], HIGH);
   } else {
+    digitalWrite(ledPins[0], LOW);
+  }
+  
+  buttonState = digitalRead(pushBtn);
+  if (buttonState == HIGH && currentWaterLevel < 4) {
     digitalWrite(relayPin, LOW);
+
+    for (int currentLoading = currentWaterLevel; currentLoading < pinCount; currentLoading++) {
+      digitalWrite(ledPins[currentLoading], HIGH);
+      delay(500);
+    }
+  } else {
+    digitalWrite(relayPin, HIGH);
   }
 }
