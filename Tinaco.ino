@@ -7,6 +7,7 @@
 const int ledPins[] = {
   2, 3, 4, 5, 6
 };       // an array of pin numbers to which LEDs are attached
+const int btnLed = 13;
 const int levelPins[] = {
   7, 8, 9, 10
 };       // an array of pin numbers to which LEDs are attached
@@ -24,6 +25,7 @@ void setup() {
   for (int thisPin = 0; thisPin < pinCount; thisPin++) {
     pinMode(ledPins[thisPin], OUTPUT);
   }
+  pinMode(btnLed, OUTPUT);
   pinMode(relayPin, OUTPUT);
 
   // initialize the pushbutton pin as an input:
@@ -55,12 +57,14 @@ void loop() {
   buttonState = digitalRead(pushBtn);
   if (buttonState == HIGH && currentWaterLevel < 4) {
     digitalWrite(relayPin, LOW);
+    digitalWrite(btnLed, HIGH);
 
     for (int currentLoading = currentWaterLevel; currentLoading < pinCount; currentLoading++) {
       digitalWrite(ledPins[currentLoading], HIGH);
-      delay(500);
+      delay(200);
     }
   } else {
     digitalWrite(relayPin, HIGH);
+    digitalWrite(btnLed, LOW);
   }
 }
