@@ -63,6 +63,12 @@ void loop() {
       digitalWrite(ledPins[currentLoading], HIGH);
       delay(200);
     }
+  } else if (buttonState == HIGH && currentWaterLevel == 4) {
+    digitalWrite(relayPin, HIGH);
+    digitalWrite(btnLed, LOW);
+    delay(150);
+    digitalWrite(btnLed, HIGH);
+    delay(150);
   } else {
     digitalWrite(relayPin, HIGH);
     digitalWrite(btnLed, LOW);
